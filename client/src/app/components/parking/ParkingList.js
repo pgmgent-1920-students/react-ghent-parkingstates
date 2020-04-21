@@ -14,9 +14,14 @@ const ParkingList = () => {
       const parkingStatesData = await getParkingStatesFromApi();
       setParkings(parkingStatesData.records);
     }
+       
+    if (parkings === null) {
+      fetchData(); 
+    }
 
-    fetchData();    
-  }, [])
+    const timerId = setInterval(() => fetchData(), 30000);
+    return () => clearInterval(timerId);
+  }, []);
 
   const getParkingStatesFromApi = async () => {
     const response = await fetch(API_GHENT_PARKINSTATES_ENDPOINT);
