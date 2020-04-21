@@ -1,19 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import ParkingListItem from './ParkingListItem';
 
 import './ParkingList.css';
 
 const API_GHENT_PARKINSTATES_ENDPOINT = 'https://data.stad.gent/api/records/1.0/search/?dataset=bezetting-parkeergarages-real-time&facet=description';
 
 const ParkingList = () => {
+  const [parkings, setParkings] = useState(null);
 
   useEffect(() => {
     async function fetchData () {
       const parkingStatesData = await getParkingStatesFromApi();
-      console.log(parkingStatesData);
+      setParkings(parkingStatesData.records);
     }
 
-    fetchData();
-    
+    fetchData();    
   }, [])
 
   const getParkingStatesFromApi = async () => {
@@ -25,7 +27,11 @@ const ParkingList = () => {
 
   return (
     <div className="parking-list">
-    PL
+      {!!parkings && parkings.map((parking) => {
+        return (
+          <ParkingListItem key={parking.fields.id} parking={parking} />
+        )
+      })}
     </div>
   );
 };
